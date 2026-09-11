@@ -2,58 +2,65 @@
 
 **Autonomous Research & Optimization Runtime Architecture**
 
-AURORA is a long-term CSE project for building an autonomous research and engineering system. The first milestone is a small, testable research loop:
+AURORA is a long-term CSE project for building an autonomous research and engineering system. It is designed around a strict evidence loop:
 
-**goal → hypothesis → experiment → evaluation → memory → next iteration**
+**goal → hypothesis → mathematical model → experiment → verification → memory → next iteration**
 
-The project will later grow toward mathematical reasoning, simulation, optimization, scientific data connectors, computer vision, engineering design, and authorized security research.
+## Current milestone: v0.2
 
-## Current milestone: v0.1
+AURORA v0.2 adds a verified symbolic mathematics tool. It can:
+- parse equations such as `x**2 - 5*x + 6 = 0`;
+- solve them symbolically with SymPy;
+- independently verify candidate solutions by substitution;
+- persist the complete result and verification evidence in the experience store;
+- route equation-like research goals through the math engine.
 
-The v0.1 prototype:
-- accepts a research goal from the command line;
-- generates a deterministic set of hypotheses for a simple mathematical optimization problem;
-- runs experiments;
-- evaluates outcomes;
-- stores successful/failed experiences in JSON;
-- selects the next candidate using prior experience.
-
-## Quick start
+### Quick start
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -e .
-python -m aurora
+python -m pip install -e '.[dev]'
+python -m aurora --equation 'x**2 - 5*x + 6 = 0'
+python -m pytest
 ```
 
-Run tests:
+You can also run the original optimization loop:
 
 ```bash
-pytest
+python -m aurora 'Find the minimum of the demonstration objective.'
 ```
 
-## Repository structure
+## Architecture
 
 ```text
-aurora/
-  agent/          orchestration loop
-  memory/         persistent experience store
-  planner/        hypothesis/experiment planning
-  evaluator/      result evaluation
-  math/           future symbolic/numerical engines
-  experiments/    experiment abstractions
-  simulation/     future scientific simulators
-  data/           future authorized data connectors/fusion
-  vision/         future computer-vision modules
-  security/       future authorized security-analysis modules
-  engineering/    future design/prototyping modules
-  interface/      future CLI/API/UI
-
-tests/
-docs/
+User Goal
+   |
+   v
+ResearchAgent
+   |
+   +--> Planner --------> Hypotheses
+   |
+   +--> Math Engine ----> Symbolic solution + verification
+   |
+   +--> Experiment -----> Results
+   |
+   +--> Evaluator ------> Success/Failure
+   |
+   +--> Memory ---------> Persistent experience
+   |
+   +--------------------> Next iteration
 ```
 
-## Design principle
+The LLM, when introduced in a later milestone, will orchestrate verified tools rather than act as the source of mathematical proof.
 
-AURORA should never treat an LLM's output as proof. Mathematical verification, simulation, measurements, uncertainty, and explicit assumptions remain separate layers.
+## 4-year direction
+
+1. **Foundations:** mathematics, algorithms, systems programming, symbolic/numerical computing.
+2. **Autonomous experimentation:** simulation, optimization, failure analysis, experiment lineage, distributed execution.
+3. **AI research agent:** LLM tool use, scientific retrieval, hypothesis generation, evidence evaluation, uncertainty.
+4. **Engineering system:** domain simulators, CAD/design interfaces, multi-objective optimization, hardware/sensor interfaces, and real-world experiments.
+
+## Data and security
+
+Future data connectors may integrate public or explicitly authorized cameras, satellite feeds, sensors, computers, and servers. Security research is intended for systems the operator owns or is authorized to test, with auditable permissions.
